@@ -1,12 +1,21 @@
 package util
 
 import (
+	"context"
+	"fmt" // for clearing screen
 	"log"
 	"os"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 	config "github.com/yigitoo/cli-bank/config"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+)
+
+var (
+	DatabaseURL string = getDatabaseUrl()
 )
 
 func GenerateUserID() string {
@@ -15,33 +24,35 @@ func GenerateUserID() string {
 }
 
 type CurrencyQuantities struct {
-	TRY float64
-	USD float64
-	EUR float64
+	TRY float64 `bson:"TRY"`
+	USD float64 `bson:"USD"`
+	EUR float64 `bson:"EUR"`
 }
 
 type User struct {
+	ID       primitive.ObjectID `bson:"_id"`
 	Name     string
 	Password string
 	Balance  CurrencyQuantities
-	ID       string
 }
-
-func CurrencyQuantitiesToList(currencies CurrencyQuantities) []float64 {
-	list := make([]float64, 3)
-	list = append(list, currencies.TRY)
-	list = append(list, currencies.USD)
-	list = append(list, currencies.EUR)
-	return list
-}
-
-var (
-	DatabaseURL string = getDatabaseUrl()
-)
 
 func getDatabaseUrl() string {
 	if err := godotenv.Load(config.ProjectRootPath + "/.env"); err != nil {
 		log.Fatal(err)
 	}
 	return os.Getenv("DB_LINK")
+}
+
+func CloseDB(client *mongo.Client) {
+	err := client.Disconnect(context.TODO())
+	if err != nil {
+		log.Fatal(err)
+	}
+	println("Bizi tercih ettiginiz icin tesekkurler!")
+	time.Sleep(2 * time.Second)
+	ClearScreen()
+}
+
+func ClearScreen() {
+	fmt.Printf("\x1bc")
 }
