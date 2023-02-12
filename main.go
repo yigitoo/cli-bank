@@ -47,7 +47,7 @@ func main() {
 		session_user = user.ID
 		loggedUser = user
 		if isLogged {
-			fmt.Printf("Logged in as: %v", user.Name)
+			fmt.Printf("%v olarak giris yapildi!", user.Name)
 			time.Sleep(2 * time.Second)
 			break
 		} else {
@@ -66,12 +66,10 @@ func AuthOpt(collection *mongo.Collection) (bool, definitions.User) {
 
 	definitions.ClearScreen()
 
-	fmt.Println(`
-=== GIRIS YAP ===
-	`)
-	fmt.Print("kullanici adi: ")
+	fmt.Println(`=== GIRIS YAP ===`)
+	fmt.Print("Kullanici adi: ")
 	fmt.Scanln(&username)
-	fmt.Print("sifre: ")
+	fmt.Print("Sifre: ")
 	fmt.Scanln(&password)
 	wg.Add(1)
 	for {
@@ -147,11 +145,9 @@ func MoneyOperations(collection *mongo.Collection, user definitions.User) {
 2. Para Cek
 3. Parani Baska Bir Birime Donustur (TRY<=>EUR<=>USD)
 4. Paranı Başkasına Gönder
-Q. Çıkış!
-		`)
+Q. Çıkış!`)
 		fmt.Printf(`
-Bakiye: %f TRY, %f USD, %f EUR
-`, user.Balance.TRY, user.Balance.USD, user.Balance.EUR)
+Bakiye: %f TRY, %f USD, %f EUR`, user.Balance.TRY, user.Balance.USD, user.Balance.EUR)
 		var request string
 		fmt.Print("Girdi: ")
 		fmt.Scanln(&request)
